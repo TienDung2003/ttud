@@ -7,12 +7,13 @@ int mem[MAX];
 
 int LIS(int i)
 {
-    if(i == 1) return 1;
+    if(i == 1) mem[i]=1;
     if(mem[i] != -1) return mem[i];
 
     int res = 1;
     for(int j=1; j<i; j++) {
         if(a[j] < a[i]) res = max(res, 1 + LIS(j));
+        LIS(j);
     }
     mem[i] = res;
 
@@ -29,7 +30,16 @@ int Trace_recursive(int position)
     }
     cout << a[position] << " ";
 }
-
+ void Trace(int i) {
+    for (int j = i- 1; j >= 1; j--){
+        if (a[j] < a[i] && mem[i] == 1 + mem[j]){
+            Trace(j);
+            break;
+        }
+    }
+    cout << a[i] << ' ';
+ }
+/*
 int Trace_loop(int position)
 {
     stack<int> st;
@@ -51,21 +61,27 @@ int Trace_loop(int position)
         st.pop();
     }
 }
-
+*/
 int main()
 {
     memset(mem, -1, sizeof(mem));
     scanf("%d", &n);
     for(int i=1; i<=n; i++) scanf("%d", &a[i]);
     LIS(n);
-    int position = 1;
-    for(int i=2; i<=n; i++) {
-        if(mem[i] > mem[position]) position = i;
+    int ans = 0, pos = 0;
+    for (int i = 1; i <= n; i++){
+            //cout<< i<<" "<< mem[i]<<endl;
+        if (ans < mem[i]){
+            ans = mem[i];
+            pos = i;
+
+        }
     }
-    cout << mem[position] << "\n";
-    Trace_recursive(position);
-    cout << "\n";
-    Trace_loop(position);
+    cout << ans << endl;
+    //cout << mem[pos] << "\n";
+//Trace(pos);
+    //cout << "\n";
+    //Trace_loop(position);
 
     return 0;
 }
